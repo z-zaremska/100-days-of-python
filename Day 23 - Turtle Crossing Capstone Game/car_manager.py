@@ -17,13 +17,12 @@ class CarManager:
         car.shapesize(1, 2)
         car.color(random.choice(COLORS))
         car.penup()
-        car.setheading(180)
-        car.goto(350, random.randint(-250, 250))
+        car.goto(300, random.randint(-250, 250))
         self.cars.append(car)
 
     def speed_up(self):
         self.car_speed += MOVE_INCREMENT
 
-    def move_forward(self):
+    def move_cars(self):
         for car in self.cars:
-            car.forward(self.car_speed)
+            car.backward(self.car_speed)

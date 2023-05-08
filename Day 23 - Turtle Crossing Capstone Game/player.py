@@ -12,7 +12,6 @@ class Player(Turtle):
         self.penup()
         self.new_game()
 
-
     def move(self):
         self.forward(MOVE_DISTANCE)
 

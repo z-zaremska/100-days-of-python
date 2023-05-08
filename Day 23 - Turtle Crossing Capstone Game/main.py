@@ -20,9 +20,10 @@ game_is_on = True
 while game_is_on:
     time.sleep(0.1)
     screen.update()
+    # Create new car every 6th loop
     if counter % 6 == 0:
         car_manager.create_car()
-    car_manager.move_forward()
+    car_manager.move_cars()
     counter += 1
 
     # Detect player crossing the line
