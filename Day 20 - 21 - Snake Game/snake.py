@@ -51,7 +51,7 @@ class Snake:
     def right(self):
         if self.head.heading() != LEFT:
             self.head.setheading(RIGHT)
-
+            
     def reset(self):
         for segment in self.segments:
             # Position old snake out the borderline

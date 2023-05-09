@@ -1,5 +1,6 @@
 from turtle import Turtle
-import datetime as dt
+import datetime as 
+
 
 ALIGMENT = 'center'
 FONT = ('Calibri Light', 24, 'normal')
