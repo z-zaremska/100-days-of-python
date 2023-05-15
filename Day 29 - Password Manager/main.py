@@ -3,11 +3,18 @@ from tkinter import messagebox
 import json
 import os
 import random
+import string
 
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 def generate_password():
-    new_password = random.randint(0, 9)
+    password_entry.delete(0, END)
+
+    new_password = ''
+    for i in range(10):
+        letter = random.choice(string.ascii_letters)
+        number = str(random.randint(0, 10))
+        new_password += random.choice([letter, number])
 
     password_entry.insert(0, f'{new_password}')
 
@@ -29,18 +36,21 @@ def add_password():
     password = password_entry.get()
     password_entry.delete(0, END)
 
-    # Pop-up message about successful operation
-    is_ok = messagebox.askokcancel(title=website, message=f'Your username: {username}\nYour password: {password}\n'
-                                                          f'\nDo you want to save it?')
+    if len(website) < 13 or len(username) < 3 or len(password) < 8:
+        messagebox.showinfo(title='No valid data', message='All fields must be fulfilled!')
+    else:
+        # Pop-up message about successful operation
+        is_ok = messagebox.askokcancel(title=website, message=f'Your username: {username}\nYour password: {password}\n'
+                                                              f'\nDo you want to save it?')
 
-    if is_ok:
-        PASSWORDS[f'{website}'] = {}
-        PASSWORDS[f'{website}']['username'] = username
-        PASSWORDS[f'{website}']['password'] = password
+        if is_ok:
+            PASSWORDS[f'{website}'] = {}
+            PASSWORDS[f'{website}']['username'] = username
+            PASSWORDS[f'{website}']['password'] = password
 
-        with open('my_passwords.json', 'w') as f:
-            json_passwords = json.dumps(PASSWORDS, indent=3)
-            f.write(json_passwords)
+            with open('my_passwords.json', 'w') as f:
+                json_passwords = json.dumps(PASSWORDS, indent=3)
+                f.write(json_passwords)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
