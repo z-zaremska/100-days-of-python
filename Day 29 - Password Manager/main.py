@@ -2,8 +2,6 @@ from tkinter import *
 import json
 import os
 
-passwords = {}
-
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
 
 
@@ -11,31 +9,34 @@ passwords = {}
 def load_passwords():
     if os.path.exists('my_passwords.json'):
         with open('my_passwords.json', 'r') as f:
-            global passwords
-            passwords = json.load(f)
+            return json.load(f)
+    else:
+        return {}
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_password():
     website = website_entry.get()
+    website_entry.delete(8, END)
     username = username_entry.get()
     password = password_entry.get()
+    password_entry.delete(0, END)
 
-    passwords[f'{website}'] = {}
-    passwords[f'{website}']['username'] = username
-    passwords[f'{website}']['password'] = password
+    PASSWORDS[f'{website}'] = {}
+    PASSWORDS[f'{website}']['username'] = username
+    PASSWORDS[f'{website}']['password'] = password
 
     with open('my_passwords.json', 'w') as f:
-        json_passwords = json.dumps(passwords, indent=3)
+        json_passwords = json.dumps(PASSWORDS, indent=3)
         f.write(json_passwords)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
+PASSWORDS = load_passwords()
+
 window = Tk()
 window.config(padx=50, pady=50)
 window.title('Password Manager')
-
-load_passwords()
 
 canvas = Canvas(width=200, height=200)
 logo_img = PhotoImage(file='logo.png')
@@ -61,7 +62,7 @@ website_entry.insert(0, 'https://')
 
 username_entry = Entry(width=53)
 username_entry.grid(column=1, row=2, columnspan=2)
-username_entry.insert(END, '@gmail.com')
+username_entry.insert(END, 'your_fav_email@gmail.com')
 
 password_entry = Entry(width=35)
 password_entry.grid(column=1, row=3)
