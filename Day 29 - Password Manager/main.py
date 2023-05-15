@@ -1,8 +1,15 @@
 from tkinter import *
+from tkinter import messagebox
 import json
 import os
+import random
+
 
 # ---------------------------- PASSWORD GENERATOR ------------------------------- #
+def generate_password():
+    new_password = random.randint(0, 9)
+
+    password_entry.insert(0, f'{new_password}')
 
 
 # ---------------------------- RETRIEVE PASSWORD ------------------------------- #
@@ -22,13 +29,18 @@ def add_password():
     password = password_entry.get()
     password_entry.delete(0, END)
 
-    PASSWORDS[f'{website}'] = {}
-    PASSWORDS[f'{website}']['username'] = username
-    PASSWORDS[f'{website}']['password'] = password
+    # Pop-up message about successful operation
+    is_ok = messagebox.askokcancel(title=website, message=f'Your username: {username}\nYour password: {password}\n'
+                                                          f'\nDo you want to save it?')
 
-    with open('my_passwords.json', 'w') as f:
-        json_passwords = json.dumps(PASSWORDS, indent=3)
-        f.write(json_passwords)
+    if is_ok:
+        PASSWORDS[f'{website}'] = {}
+        PASSWORDS[f'{website}']['username'] = username
+        PASSWORDS[f'{website}']['password'] = password
+
+        with open('my_passwords.json', 'w') as f:
+            json_passwords = json.dumps(PASSWORDS, indent=3)
+            f.write(json_passwords)
 
 
 # ---------------------------- UI SETUP ------------------------------- #
@@ -68,7 +80,7 @@ password_entry = Entry(width=35)
 password_entry.grid(column=1, row=3)
 
 # Buttons
-generate_password_button = Button(text='Generate Password')
+generate_password_button = Button(text='Generate Password', command=generate_password)
 generate_password_button.grid(column=2, row=3)
 
 add_button = Button(text='Add', width=45, command=add_password)
