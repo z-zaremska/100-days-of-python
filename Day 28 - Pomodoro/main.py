@@ -9,24 +9,37 @@ WORK_MIN = 25
 SHORT_BREAK_MIN = 5
 LONG_BREAK_MIN = 20
 
-# ---------------------------- TIMER RESET ------------------------------- # 
+# ---------------------------- TIMER RESET ------------------------------- #
+def reset_time():
+    pass
+
 
 # ---------------------------- TIMER MECHANISM ------------------------------- # 
 
-# ---------------------------- COUNTDOWN MECHANISM ------------------------------- # 
+# ---------------------------- COUNTDOWN MECHANISM ------------------------------- #
+def start_time():
+    pass
+
 
 # ---------------------------- UI SETUP ------------------------------- #
 window = Tk()
 window.title('Pomodoro')
 window.config(padx=100, pady=50, bg=YELLOW)
 
+timer_label = Label(text='Timer', bg=YELLOW, fg=GREEN, font=(FONT_NAME, 25, 'bold'))
+timer_label.grid(column=1, row=0)
+
+reset_button = Button(text='Reset', width=5, command=reset_time)
+reset_button.grid(column=2, row=3)
+
+start_button = Button(text='Start', width=5, command=start_time)
+start_button.grid(column=0, row=3)
+
+
 canvas = Canvas(width=200, height=224, bg=YELLOW, highlightthickness=0)
 tomato_img = PhotoImage(file='tomato.png')
 canvas.create_image(100, 112, image=tomato_img)
 canvas.create_text(100, 130, text='00:00', fill='white', font=(FONT_NAME, 25, 'bold'))
-canvas.pack()
-
-
-
+canvas.grid(column=1, row=2)
 
 window.mainloop()
