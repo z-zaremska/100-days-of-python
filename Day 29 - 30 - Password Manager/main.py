@@ -49,26 +49,6 @@ def search_for_website():
 
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
-def search_for_website():
-    searched_website = search_entry.get().lower()
-    password_entry.delete(0, END)
-    website_entry.delete(0, END)
-    username_entry.delete(0, END)
-
-    try:
-        searched_username = PASSWORDS[f'{searched_website}']['username']
-        searched_password = PASSWORDS[f'{searched_website}']['password']
-
-        website_entry.insert(0, searched_website)
-        username_entry.insert(0, searched_username)
-        password_entry.insert(0, searched_password)
-
-    except KeyError:
-        messagebox.showinfo(title='Website not found', message=f'Sorry, but website {searched_website.title()} was '
-                                                               f'not found')
-
-
-# ---------------------------- SAVE PASSWORD ------------------------------- #
 def add_password():
     website = website_entry.get().lower()
     username = username_entry.get()
