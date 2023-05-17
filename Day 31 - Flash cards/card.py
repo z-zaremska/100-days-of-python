@@ -2,18 +2,16 @@ import pandas as pd
 
 
 class Card:
+    """Class holding all Card attributes."""
     def __init__(self):
         self.language_A = ''
         self.language_B = ''
         self.word_A = ''
         self.word_B = ''
-        self.guessed = False
-
-    def card_guessed(self):
-        self.guessed = True
 
 
 class CardManager:
+    """Class managing Cards behaviour during the game."""
     def __init__(self, from_lang_a, to_lang_b):
         self.unguessed_cards = []
         self.guessed_cards = []
@@ -22,7 +20,8 @@ class CardManager:
         self.memorized_cards_num = 0
 
     def create_cards(self, list_of_words):
-        """Create cards and assign to them word with its translation."""
+        """Create cards and assign to them word from the list with its translation."""
+
         number_of_cards = len(list_of_words)
 
         for i in range(number_of_cards):
@@ -37,13 +36,16 @@ class CardManager:
             self.unguessed_cards.append(new_card)
 
     def add_card_to_guessed(self, card):
-        card.card_guessed()
-        if card.guessed is True:
-            self.guessed_cards.append(card)
-            self.unguessed_cards.remove(card)
+        """If card was guessed move it from unguessed_cards to guessed_cards list.
+        Then increase number of memorized cards (during current learning session) by 1."""
+
+        self.guessed_cards.append(card)
+        self.unguessed_cards.remove(card)
         self.memorized_cards_num += 1
 
     def save_progress(self):
+        """Create new csv file with all unmemorized cards from current learning session."""
+
         words_to_learn_dict = {
             f'{self.from_lang_A}': [],
             f'{self.to_lang_B}': []
