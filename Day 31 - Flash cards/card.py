@@ -1,3 +1,6 @@
+import pandas as pd
+
+
 class Card:
     def __init__(self):
         self.language_A = ''
@@ -16,6 +19,7 @@ class CardManager:
         self.guessed_cards = []
         self.from_lang_A = from_lang_a.title()
         self.to_lang_B = to_lang_b.title()
+        self.memorized_cards_num = 0
 
     def create_cards(self, list_of_words):
         """Create cards and assign to them word with its translation."""
@@ -37,3 +41,17 @@ class CardManager:
         if card.guessed is True:
             self.guessed_cards.append(card)
             self.unguessed_cards.remove(card)
+        self.memorized_cards_num += 1
+
+    def save_progress(self):
+        words_to_learn_dict = {
+            f'{self.from_lang_A}': [],
+            f'{self.to_lang_B}': []
+        }
+
+        for card in self.unguessed_cards:
+            words_to_learn_dict[f'{self.from_lang_A}'].append(card.word_A)
+            words_to_learn_dict[f'{self.to_lang_B}'].append(card.word_B)
+
+        words_to_learn = pd.DataFrame.from_dict(words_to_learn_dict)
+        words_to_learn.to_csv('./data/words_to_learn.csv', index=False)
