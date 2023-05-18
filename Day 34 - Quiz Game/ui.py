@@ -45,10 +45,18 @@ class QuizInterface:
         self.canvas.itemconfig(self.q_text, text=f'{nq_text}')
         self.score_label.config(text=f'Score: {self.quiz.score}/10')
 
+    def continue_or_end_game(self):
+        if self.quiz.still_has_questions():
+            self.get_next_question()
+        else:
+            self.canvas.itemconfig(self.q_text, text=f'Your score is: {self.quiz.score}/10 correct answers.')
+            self.true_button.config(state='disabled')
+            self.false_button.config(state='disabled')
+
     def press_true(self):
         self.quiz.check_answer('True')
-        self.get_next_question()
+        self.continue_or_end_game()
 
     def press_false(self):
         self.quiz.check_answer('False')
-        self.get_next_question()
+        self.continue_or_end_game()
