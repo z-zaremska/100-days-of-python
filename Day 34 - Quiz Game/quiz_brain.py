@@ -22,3 +22,6 @@ class QuizBrain:
         correct_answer = self.current_question.answer
         if user_answer.lower() == correct_answer.lower():
             self.score += 1
+            return True
+        else:
+            return False

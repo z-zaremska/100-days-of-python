@@ -46,6 +46,9 @@ class QuizInterface:
         self.score_label.config(text=f'Score: {self.quiz.score}/10')
 
     def continue_or_end_game(self):
+        """If there are still questions display next one, if not display final score and disable both buttons."""
+        self.canvas.config(bg='white')
+
         if self.quiz.still_has_questions():
             self.get_next_question()
         else:
@@ -53,10 +56,20 @@ class QuizInterface:
             self.true_button.config(state='disabled')
             self.false_button.config(state='disabled')
 
+    def color_feedback(self, result):
+        if result:
+            self.canvas.config(bg='green')
+        else:
+            self.canvas.config(bg='red')
+
     def press_true(self):
-        self.quiz.check_answer('True')
-        self.continue_or_end_game()
+        """Check if player 'True 'answer is correct and go to the next question."""
+        result = self.quiz.check_answer('True')
+        self.color_feedback(result)
+        self.window.after(200, self.continue_or_end_game)
 
     def press_false(self):
-        self.quiz.check_answer('False')
-        self.continue_or_end_game()
+        """Check if player 'False 'answer is correct and go to the next question."""
+        result = self.quiz.check_answer('False')
+        self.color_feedback(result)
+        self.window.after(200, self.continue_or_end_game)
