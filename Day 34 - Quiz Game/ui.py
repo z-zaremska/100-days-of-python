@@ -41,6 +41,7 @@ class QuizInterface:
         self.window.mainloop()
 
     def get_next_question(self):
+        """Display new question and update the score."""
         nq_text = self.quiz.next_question()
         self.canvas.itemconfig(self.q_text, text=f'{nq_text}')
         self.score_label.config(text=f'Score: {self.quiz.score}/10')
@@ -57,6 +58,7 @@ class QuizInterface:
             self.false_button.config(state='disabled')
 
     def color_feedback(self, result):
+        """Depending on player answer change canvas color to green if correct, or red if wrong."""
         if result:
             self.canvas.config(bg='green')
         else:
