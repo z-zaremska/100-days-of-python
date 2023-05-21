@@ -60,8 +60,8 @@ def check_difference():
     yesterday = (dt.date.today() - dt.timedelta(days=2)).strftime("%Y-%m-%d 20:00:00")
     day_before_yesterday = (dt.date.today() - dt.timedelta(days=3)).strftime("%Y-%m-%d 20:00:00")
 
-    stock_1 = float(stock_data[yesterday]['5. volume'])
-    stock_2 = float(stock_data[day_before_yesterday]['5. volume'])
+    stock_1 = float(stock_data[yesterday]['4. close'])
+    stock_2 = float(stock_data[day_before_yesterday]['4. close'])
     diff = stock_1/stock_2 - 1
 
     if diff > 0.05:
@@ -77,7 +77,7 @@ change = check_difference()
 
 if status is not None:
     articles = get_news(NEWS_ENDPOINT, NEWS_PARAMETERS)
-
+    print(articles)
     # Send an email with last 3 news about company.
     with smtplib.SMTP(SMTP_SERVER) as connection:
         connection.starttls()
