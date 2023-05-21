@@ -4,20 +4,47 @@ import os
 
 STOCK = "TSLA"
 COMPANY_NAME = "Tesla Inc"
-API_KEY = os.environ.get('API_KEY')
+STOCK_ENDPOINT = 'https://www.alphavantage.co/query'
+NEWS_ENDPOINT = 'https://newsapi.org/v2/everything'
+NEWSAPI_API_KEY = os.environ.get('NEWSAPI_API_KEY')
 
 STOCK_PARAMETERS = {
     'symbol': STOCK,
     'function': 'TIME_SERIES_INTRADAY',
     'interval': '60min',
-    'apikey': API_KEY
+    'apikey': os.environ.get('ALPHAVANTAGE_API_KEY')
 }
 
-yesterday = (dt.date.today() - dt.timedelta(days=2)).strftime("%Y-%m-%d 20:00:00")
-day_before_yesterday = (dt.date.today() - dt.timedelta(days=3)).strftime("%Y-%m-%d 20:00:00")
+NEWS_PARAMETERS = {
+    'apiKey': NEWSAPI_API_KEY,
+    'q': COMPANY_NAME,
+    'searchIn': 'title',
+    'language': 'en',
+}
+
+
+def get_stock_data(endpoint: str, parameters: dict):
+    """Retrieve hourly stock data."""
+
+    stock_response = requests.get(endpoint, params=parameters)
+    stock_response.raise_for_status()
+
+    return stock_response.json()["Time Series (60min)"]
+
+
+def get_news(endpoint: str, parameters: dict):
+    """Retrieve last 3 news about company."""
+
+    news_response = requests.get(endpoint, params=parameters)
+    news_response.raise_for_status()
+
+    return news_response.json()["articles"][:3]
 
 
 def check_difference():
+    yesterday = (dt.date.today() - dt.timedelta(days=2)).strftime("%Y-%m-%d 20:00:00")
+    day_before_yesterday = (dt.date.today() - dt.timedelta(days=3)).strftime("%Y-%m-%d 20:00:00")
+
     stock_1 = float(stock_data[yesterday]['5. volume'])
     stock_2 = float(stock_data[day_before_yesterday]['5. volume'])
     diff = stock_1/stock_2 - 1
@@ -31,23 +58,28 @@ def check_difference():
         return None
 
 
-stock_url = 'https://www.alphavantage.co/query'
-stock_response = requests.get(stock_url, params=STOCK_PARAMETERS)
-stock_response.raise_for_status()
-stock_data = stock_response.json()["Time Series (60min)"]
+stock_data = get_stock_data(STOCK_ENDPOINT, STOCK_PARAMETERS)
 
 status = check_difference()
 
-if status == 'increased':
-    print('Get news - it increased!')
-elif status == 'decreased':
-    print('Get news - it decreased!')
+if status is not None:
+    news_data = get_news(NEWS_ENDPOINT, NEWS_PARAMETERS)
+    print(news_data)
+    if status == 'increased':
+        print('Get news - it increased!')
+    elif status == 'decreased':
+        print('Get news - it decreased!')
 
 
 
 
 ## STEP 2: Use https://newsapi.org
-# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME. 
+# Instead of printing ("Get News"), actually get the first 3 news pieces for the COMPANY_NAME.
+
+
+
+
+
 
 ## STEP 3: Use https://www.twilio.com
 # Send a seperate message with the percentage change and each article's title and description to your phone number. 
