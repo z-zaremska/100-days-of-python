@@ -1,9 +1,12 @@
+import datetime as dt
 import requests
 import os
 
 USERNAME = os.environ.get('PIXELA_USERNAME')
 TOKEN = os.environ.get('PIXELA_TOKEN')
+GRAPH_ID = 'first'
 
+# Create new user
 pixela_users = 'https://pixe.la/v1/users'
 
 user_parameters = {
@@ -13,14 +16,13 @@ user_parameters = {
     'notMinor': 'yes'
 }
 
-# Create new user
-# new_user = requests.post(url=pixela_users, json=user_parameters)
+new_user = requests.post(url=pixela_users, json=user_parameters)
 
 # Create new graph
 pixela_graph = f'{pixela_users}/{USERNAME}/graphs'
 
 graph_parameters = {
-    'id': 'first',
+    'id': GRAPH_ID,
     'name': 'Coding',
     'color': 'momiji',
     'unit': 'hours',
@@ -32,4 +34,13 @@ headers = {
 }
 
 new_graph = requests.post(url=pixela_graph, json=graph_parameters, headers=headers)
-print(new_graph)
+
+# Create new pixel
+pixela_pixel = f'{pixela_graph}/{GRAPH_ID}'
+
+pixel_parameters = {
+    'date': dt.date.today().strftime('%Y%m%d'),
+    'quantity': '3'
+}
+
+add_pixel = requests.post(url=pixela_pixel, json=pixel_parameters, headers=headers)
