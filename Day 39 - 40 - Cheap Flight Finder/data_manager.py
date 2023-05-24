@@ -1,31 +1,20 @@
-from flight_search import FlightSearch
 import requests
-import os
 
-MY_FLIGHTS_URL = 'https://api.sheety.co/3940615f01c64bc132046d75bfe21c84/flightDeals/prices'
-SHEETY_TOKEN = os.environ.get('SHEETY_TOKEN')
-SHEETY_HEADERS = {'Authorization': SHEETY_TOKEN}
+SHEETY_HEADERS = {'Authorization': 'your_token'}
 
 
 class DataManager:
     """Class responsible for communication with Flights Google Sheet. """
-    def __init__(self):
-        self.destinations = requests.get(url=MY_FLIGHTS_URL, headers=SHEETY_HEADERS).json()['prices']
-        self.get_city_codes()
-        self.save_city_codes()
+    def __init__(self, sheety_token, sheety_url):
+        SHEETY_HEADERS['Authorization'] = sheety_token
+        self.sheety_token = sheety_token,
+        self.sheety_url = sheety_url
+        self.destinations = requests.get(url=sheety_url, headers=SHEETY_HEADERS).json()['prices']
 
-    def get_city_codes(self):
+    def save_iata_codes(self):
+        """Save IATA Codes in the Flights Google Sheet."""
         for destination in self.destinations:
-            if destination['iataCode'] == '':
-                city_name = destination['city']
-                destination['iataCode'] = FlightSearch(city_name).iata_code
-
-    def save_city_codes(self):
-        """Insert missing IATA codes to Flights Google Sheet."""
-        for destination in self.destinations:
-            row_body = {
-                'price': {
-                    'iataCode': destination['iataCode']
-                }
+            updated_row = {
+                'price': {'iataCode': destination['iataCode']}
             }
-            requests.put(url=f'{MY_FLIGHTS_URL}/{destination["id"]}', json=row_body, headers=SHEETY_HEADERS)
+            requests.put(url=f'{self.sheety_url}/{destination["id"]}', json=updated_row, headers=SHEETY_HEADERS)
