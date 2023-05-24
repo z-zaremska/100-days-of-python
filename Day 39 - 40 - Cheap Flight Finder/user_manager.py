@@ -40,3 +40,10 @@ class UserManager:
 
             else:
                 print("Something went wrong.\nLet's try again!")
+
+    def get_users_data(self):
+        users = requests.get(url=self.sheety_url, headers=SHEETY_HEADERS)
+        users.raise_for_status()
+        users_data = users.json()['users']
+
+        return users_data
