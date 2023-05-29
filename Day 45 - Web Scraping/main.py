@@ -1,17 +1,14 @@
-from bs4 import BeautifulSoup
 import requests
+from bs4 import BeautifulSoup
 
-hn_url = 'https://news.ycombinator.com/news'
-news = requests.get(url=hn_url).text
+URL = "https://web.archive.org/web/20200518073855/https://www.empireonline.com/movies/features/best-movies-2/"
+response = requests.get(url=URL).text
 
-soup = BeautifulSoup(news, 'html.parser')
-articles = [article.find(name="a") for article in soup.find_all(name="span", class_="titleline")]
-scores = soup.find_all(name="span", class_="score")
+soup = BeautifulSoup(response, 'html.parser')
+movies = soup.find_all(name="h3", class_="title")
 
-article_texts = [article.get_text() for article in articles]
-article_links = [article.get("href") for article in articles]
-article_scores = [int(score.get_text().split()[0]) for score in scores]
-
-print(article_texts)
-print(article_links)
-print(article_scores)
+# Get the list of top 100 movies
+with open('movies.txt', "w", encoding="utf-8") as file:
+    for i in range(1, len(movies)+1):
+        title = movies[-i].getText()
+        file.write(f'{title}\n')
