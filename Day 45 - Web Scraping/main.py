@@ -5,13 +5,13 @@ hn_url = 'https://news.ycombinator.com/news'
 news = requests.get(url=hn_url).text
 
 soup = BeautifulSoup(news, 'html.parser')
-article_tag = soup.find(name="span", class_="titleline").find(name="a")
-score_tag = soup.find(name="span", class_="score")
+articles = [article.find(name="a") for article in soup.find_all(name="span", class_="titleline")]
+scores = soup.find_all(name="span", class_="score")
 
-article_text = article_tag.get_text()
-article_link = article_tag.get("href")
-article_upvote = score_tag.get_text()
+article_texts = [article.get_text() for article in articles]
+article_links = [article.get("href") for article in articles]
+article_scores = [int(score.get_text().split()[0]) for score in scores]
 
-print(article_text)
-print(article_link)
-print(article_upvote)
+print(article_texts)
+print(article_links)
+print(article_scores)
