@@ -4,8 +4,7 @@ from spotipy.oauth2 import SpotifyOAuth
 import requests
 from bs4 import BeautifulSoup
 
-# requested_date = input("Enter the date you want to move back in time to (yyyy-mm-dd): ")
-requested_date = '2000-08-26'
+requested_date = input("Enter the date you want to move back in time to (yyyy-mm-dd): ")
 BILLBOARD_URL = f'https://www.billboard.com/charts/hot-100/{requested_date}/'
 TOP_100 = {}
 
