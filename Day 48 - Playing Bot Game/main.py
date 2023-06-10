@@ -44,13 +44,12 @@ while time.time() < timeout:
                                                     value='//*[@id="money"]'
                                                 ).text.replace(',', ''))
 
-        try:
-            max_reward = [name for price, name in sorted(rewards_dict.items()) if price < number_of_cookies][-1]
+        max_reward = [name for price, name in sorted(rewards_dict.items()) if price < number_of_cookies][-1]
 
-            buy_reward = driver.find_element(by=By.ID, value=f'buy{max_reward}')
-            buy_reward.click()
-            print(f'Bought: buy{max_reward}')
-            game_start_time += 5
+        buy_reward = driver.find_element(by=By.ID, value=f'buy{max_reward}')
+        buy_reward.click()
+        print(f'Bought: buy{max_reward}')
+        game_start_time += 5
 
 
 driver.close()
