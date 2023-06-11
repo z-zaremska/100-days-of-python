@@ -19,13 +19,4 @@ twitter_bot.log_into_account(
     password=TWITTER_PASSWORD
 )
 
-
-
-#
-#
-# write_tweet_xpath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div'
-# write_tweet = driver.find_element(by=By.XPATH, value=write_tweet_xpath)
-#
-# message = 'Elo, elo. 520...'
-#
-# write_tweet.send_keys(message)
+twitter_bot.tweet_at_provider(2, 5)
