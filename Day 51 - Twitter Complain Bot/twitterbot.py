@@ -1,0 +1,2 @@
+class InternetSpeedTwitterBot:
+    pass
