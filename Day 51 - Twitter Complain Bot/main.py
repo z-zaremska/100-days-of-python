@@ -1,10 +1,6 @@
 import os
 import time
-
-from selenium import webdriver
-from selenium.webdriver.common.by import By
-from selenium.webdriver.chrome.service import Service
-
+from twitterbot import InternetSpeedTwitterBot
 
 PROMISED_UP = 10
 PROMISED_DOWN = 100
@@ -14,12 +10,16 @@ TWITTER_URL = 'https://twitter.com'
 SPEEDTEST_URL = 'https://www.speedtest.net/pl'
 CHROME_DRIVER = os.environ.get('CHROME_DRIVER')
 
-chrome_options = webdriver.ChromeOptions()
-chrome_options.add_experimental_option('detach', True)
-chrome_service = Service(executable_path=CHROME_DRIVER)
-driver = webdriver.Chrome(service=chrome_service, options=chrome_options)
+twitter_bot = InternetSpeedTwitterBot(
+    up=PROMISED_UP,
+    down=PROMISED_DOWN,
+    driver_path=CHROME_DRIVER
+)
 
-driver.get(url=TWITTER_URL)
+twitter_bot.go_to_site(TWITTER_URL)
+
+
+
 
 # Go to login page
 login_page_xpath = '//*[@id="layers"]/div/div[1]/div/div/div/div/div[2]/div/div/div[1]/a'
