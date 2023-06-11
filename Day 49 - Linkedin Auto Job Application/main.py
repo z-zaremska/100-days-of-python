@@ -24,6 +24,7 @@ login_page = driver.find_element(
 )
 login_page.click()
 
+# Log into an account
 enter_username = driver.find_element(by=By.ID, value='username')
 enter_username.send_keys(LINKEDIN_USERNAME)
 enter_password = driver.find_element(by=By.ID, value='password')
@@ -34,19 +35,20 @@ login_button.click()
 
 time.sleep(1)
 
+# Hide messenger window
 hide_messenger = driver.find_element(by=By.ID, value='ember113')
 hide_messenger.click()
 
+# Find job offers
 job_offers = driver.find_elements(by=By.CSS_SELECTOR, value='#main > div > div.scaffold-layout__list > div > ul > li')
 counter = 0
 
 for job in job_offers:
     job.click()
-    counter += 1
     job_details = driver.find_element(by=By.CLASS_NAME, value='jobs-unified-top-card__content--two-pane')
-    print(counter)
     time.sleep(3)
 
+    # Save job offer if job wasn't already saved.
     save_button = job_details.find_element(by=By.CSS_SELECTOR, value='button.jobs-save-button')
     if save_button.text.split('\n')[0].lower() == 'zapisz':
         save_button.click()
