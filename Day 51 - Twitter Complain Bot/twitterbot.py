@@ -9,9 +9,11 @@ class InternetSpeedTwitterBot:
     TWITTER_URL = 'https://twitter.com'
     SPEEDTEST_URL = 'https://www.speedtest.net/pl'
 
-    def __init__(self, up: int, down: int, driver_path: str):
+    def __init__(self, up: int, down: int, driver_path: str, username: str, password: str):
         self.up = up
         self.down = down
+        self.username = username
+        self.password = password
 
         chrome_options = webdriver.ChromeOptions()
         chrome_options.add_experimental_option('detach', True)
@@ -75,7 +77,7 @@ class InternetSpeedTwitterBot:
 
         time.sleep(2)
 
-    def tweet_at_provider(self, current_down: int, current_up: int):
+    def tweet_at_provider(self, current_down: float, current_up: float):
         """Create and publish tweet about internet provider."""
 
         activate_tweet_xpath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div'
@@ -118,19 +120,26 @@ And you've promised something else (upload: {self.up}; download: {self.down})!""
         time.sleep(60)
         print('Speed test has finished.')
 
-        notification_dismiss = self.driver.find_element(by=By.LINK_TEXT,
-                                                        value='Powrót do wyników testu')
+        notification_dismiss = self.driver.find_element(
+            by=By.LINK_TEXT,
+            value='Powrót do wyników testu'
+        )
         notification_dismiss.click()
 
-        current_up = float(self.driver.find_element(by=By.CLASS_NAME,
-                                                  value='upload-speed').text)
-        current_down = float(self.driver.find_element(by=By.CLASS_NAME,
-                                                    value='download-speed').text)
+        current_up = float(self.driver.find_element(
+            by=By.CLASS_NAME,
+            value='upload-speed'
+        ).text)
+        current_down = float(self.driver.find_element(
+            by=By.CLASS_NAME,
+            value='download-speed'
+        ).text)
 
         print(
             f'Current parameters:\nUpload: {current_up} ({self.up})\nDownload: {current_down} ({self.down})')
 
         if current_up < self.up or current_down < self.down:
+            self.log_into_account(username=self.username, password=self.password)
             self.tweet_at_provider(current_down, current_up)
             print('Too low!')
 
