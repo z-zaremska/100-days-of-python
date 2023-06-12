@@ -14,9 +14,11 @@ twitter_bot = InternetSpeedTwitterBot(
     driver_path=CHROME_DRIVER
 )
 
-twitter_bot.log_into_account(
-    username=TWITTER_USERNAME,
-    password=TWITTER_PASSWORD
-)
+twitter_bot.get_internet_speed()
 
-twitter_bot.tweet_at_provider(2, 5)
+# twitter_bot.log_into_account(
+#     username=TWITTER_USERNAME,
+#     password=TWITTER_PASSWORD
+# )
+
+# twitter_bot.tweet_at_provider(2, 5)

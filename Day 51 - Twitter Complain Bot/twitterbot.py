@@ -21,17 +21,13 @@ class InternetSpeedTwitterBot:
             options=chrome_options
         )
 
-        self.go_to_site(self.TWITTER_URL)
-
-    def go_to_site(self, site_url: str):
-        """Opens the site from given url."""
-        self.driver.get(url=site_url)
-
     def log_into_account(self, username: str, password: str):
         """
         Log into personal Twitter account with given username
         and password.
         """
+
+        self.driver.get(self.TWITTER_URL)
 
         # Go to login page.
         login_page_xpath = '//*[@id="layers"]/div/div[1]/div/div/div/div/div[2]/div/div/div[1]/a'
@@ -44,10 +40,10 @@ class InternetSpeedTwitterBot:
         time.sleep(1)
 
         # Enter username.
-        enter_username_xpath = '//*[@id="layers"]/div[2]/div/div/div/div/div/div[2]/div[2]/div/div/div[2]/div[2]/div/div/div/div[5]/label/div/div[2]/div/input'
+        enter_username_selector = '#layers > div:nth-child(2) > div > div > div > div > div > div.css-1dbjc4n.r-1awozwy.r-18u37iz.r-1pi2tsx.r-1777fci.r-1xcajam.r-ipm5af.r-g6jmlv > div.css-1dbjc4n.r-1867qdf.r-1wbh5a2.r-kwpbio.r-rsyp9y.r-1pjcn9w.r-1279nm1.r-htvplk.r-1udh08x > div > div > div.css-1dbjc4n.r-kemksi.r-6koalj.r-16y2uox.r-1wbh5a2 > div.css-1dbjc4n.r-16y2uox.r-1wbh5a2.r-1jgb5lz.r-1ye8kvj.r-13qz1uu > div > div > div > div.css-1dbjc4n.r-mk0yit.r-1f1sjgu.r-13qz1uu > label > div > div.css-1dbjc4n.r-18u37iz.r-16y2uox.r-1wbh5a2.r-1wzrnnt.r-1udh08x.r-xd6kpl.r-1pn2ns4.r-ttdzmv > div > input'
         enter_username = self.driver.find_element(
-            by=By.XPATH,
-            value=enter_username_xpath
+            by=By.CSS_SELECTOR,
+            value=enter_username_selector
         )
         enter_username.send_keys(username)
 
@@ -77,18 +73,54 @@ class InternetSpeedTwitterBot:
         )
         login_button.click()
 
+        time.sleep(2)
+
     def get_internet_speed(self):
         """Check the current internet speed."""
-        pass
+
+        self.driver.get(self.SPEEDTEST_URL)
+        time.sleep(2)
+
+        accept_conditions = self.driver.find_element(by=By.ID, value='onetrust-accept-btn-handler')
+        accept_conditions.click()
+
+        start_test_xpath = '//*[@id="container"]/div/div[3]/div/div/div/div[2]/div[3]/div[1]/a'
+        start_test = self.driver.find_element(
+            by=By.XPATH,
+            value=start_test_xpath
+        )
+        start_test.click()
+
+        print('Waiting for speed test to finish...')
+        time.sleep(60)
+        print('Speed test has finished.')
+
+        notification_dismiss = self.driver.find_element(by=By.LINK_TEXT, value='Powrót do wyników testu')
+        notification_dismiss.click()
+
+        current_up = int(self.driver.find_element(by=By.CLASS_NAME, value='upload-speed').text)
+        current_down = int(self.driver.find_element(by=By.CLASS_NAME, value='download-speed').text)
+
+        print(f'Current parameters:\nUpload: {current_up} ({self.up})\nDownload: {current_down} ({self.down})')
 
     def tweet_at_provider(self, current_down: int, current_up: int):
         """Create and publish tweet about internet provider."""
 
-        write_tweet_xpath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div'
-        write_tweet = self.driver.find_element(by=By.XPATH, value=write_tweet_xpath)
+        activate_tweet_xpath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div'
+        activate_tweet = self.driver.find_element(by=By.XPATH, value=activate_tweet_xpath)
+        activate_tweet.click()
+
+        time.sleep(1)
+
+        write_tweet_path = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[1]/div/div/div/div/div/div[2]/div/div/div/div/label/div[1]/div/div/div/div/div/div[2]/div/div/div/div'
+        write_tweet = self.driver.find_element(by=By.XPATH, value=write_tweet_path)
 
         message = f"""Hey, UPC!
-        My down is {current_down} and up is {current_up}!
-        And you've promised something else! (up: {self.up}; down: {self.down}."""
+My download speed is {current_down} Mb/s and upload speed is {current_up} Mb/s!
+And you've promised something else (upload: {self.up}; download: {self.down})!"""
 
         write_tweet.send_keys(message)
+
+        public_button_spath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/div/div[2]/div[3]'
+        public_button = self.driver.find_element(by=By.XPATH, value=public_button_spath)
+        # public_button.click()
