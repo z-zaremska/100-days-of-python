@@ -75,34 +75,6 @@ class InternetSpeedTwitterBot:
 
         time.sleep(2)
 
-    def get_internet_speed(self):
-        """Check the current internet speed."""
-
-        self.driver.get(self.SPEEDTEST_URL)
-        time.sleep(2)
-
-        accept_conditions = self.driver.find_element(by=By.ID, value='onetrust-accept-btn-handler')
-        accept_conditions.click()
-
-        start_test_xpath = '//*[@id="container"]/div/div[3]/div/div/div/div[2]/div[3]/div[1]/a'
-        start_test = self.driver.find_element(
-            by=By.XPATH,
-            value=start_test_xpath
-        )
-        start_test.click()
-
-        print('Waiting for speed test to finish...')
-        time.sleep(60)
-        print('Speed test has finished.')
-
-        notification_dismiss = self.driver.find_element(by=By.LINK_TEXT, value='Powrót do wyników testu')
-        notification_dismiss.click()
-
-        current_up = int(self.driver.find_element(by=By.CLASS_NAME, value='upload-speed').text)
-        current_down = int(self.driver.find_element(by=By.CLASS_NAME, value='download-speed').text)
-
-        print(f'Current parameters:\nUpload: {current_up} ({self.up})\nDownload: {current_down} ({self.down})')
-
     def tweet_at_provider(self, current_down: int, current_up: int):
         """Create and publish tweet about internet provider."""
 
@@ -123,4 +95,44 @@ And you've promised something else (upload: {self.up}; download: {self.down})!""
 
         public_button_spath = '//*[@id="react-root"]/div/div/div[2]/main/div/div/div/div/div/div[3]/div/div[2]/div[1]/div/div/div/div[2]/div[2]/div[2]/div/div/div[2]/div[3]'
         public_button = self.driver.find_element(by=By.XPATH, value=public_button_spath)
-        # public_button.click()
+        public_button.click()
+
+    def get_internet_speed(self):
+        """Check the current internet speed."""
+
+        self.driver.get(self.SPEEDTEST_URL)
+        time.sleep(2)
+
+        accept_conditions = self.driver.find_element(by=By.ID,
+                                                     value='onetrust-accept-btn-handler')
+        accept_conditions.click()
+
+        start_test_xpath = '//*[@id="container"]/div/div[3]/div/div/div/div[2]/div[3]/div[1]/a'
+        start_test = self.driver.find_element(
+            by=By.XPATH,
+            value=start_test_xpath
+        )
+        start_test.click()
+
+        print('Waiting for speed test to finish...')
+        time.sleep(60)
+        print('Speed test has finished.')
+
+        notification_dismiss = self.driver.find_element(by=By.LINK_TEXT,
+                                                        value='Powrót do wyników testu')
+        notification_dismiss.click()
+
+        current_up = float(self.driver.find_element(by=By.CLASS_NAME,
+                                                  value='upload-speed').text)
+        current_down = float(self.driver.find_element(by=By.CLASS_NAME,
+                                                    value='download-speed').text)
+
+        print(
+            f'Current parameters:\nUpload: {current_up} ({self.up})\nDownload: {current_down} ({self.down})')
+
+        if current_up < self.up or current_down < self.down:
+            self.tweet_at_provider(current_down, current_up)
+            print('Too low!')
+
+        else:
+            print("Everything's fine")
